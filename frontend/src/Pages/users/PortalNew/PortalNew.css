@@ -1,0 +1,329 @@
+.pn-steps {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+  border: 1.5px solid #e8e6e0;
+  background: #fff;
+}
+.pn-step {
+  flex: 1;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-right: 1px solid #e8e6e0;
+  position: relative;
+}
+.pn-step:last-child {
+  border-right: none;
+}
+.pn-step-num {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid #e8e6e0;
+  background: #f5f3ee;
+  color: #8a8478;
+}
+.pn-step.active .pn-step-num {
+  background: #0a0a0f;
+  color: #f5f3ee;
+  border-color: #0a0a0f;
+}
+.pn-step.done .pn-step-num {
+  background: #2d7a4f;
+  color: white;
+  border-color: #2d7a4f;
+}
+.pn-step-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #8a8478;
+  letter-spacing: -0.01em;
+}
+.pn-step.active .pn-step-label {
+  color: #0a0a0f;
+}
+.pn-step.done .pn-step-label {
+  color: #2d7a4f;
+}
+
+.pn-section {
+  background: #fff;
+  border: 1.5px solid #e8e6e0;
+  margin-bottom: 20px;
+}
+.pn-section-head {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e8e6e0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pn-section-icon {
+  font-size: 16px;
+}
+.pn-section-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0a0a0f;
+  letter-spacing: -0.02em;
+}
+.pn-section-body {
+  padding: 24px;
+}
+
+.pn-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.pn-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.pn-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pn-label {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a3f5c;
+}
+.pn-input {
+  height: 42px;
+  border: 1.5px solid #e8e6e0;
+  background: #fafaf8;
+  padding: 0 14px;
+  font-family: "Syne", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a0a0f;
+  outline: none;
+  transition: border-color 0.15s ease;
+  width: 100%;
+}
+.pn-input:focus {
+  border-color: #3a3f5c;
+  background: #fff;
+}
+.pn-select {
+  height: 42px;
+  border: 1.5px solid #e8e6e0;
+  background: #fafaf8;
+  padding: 0 14px;
+  font-family: "Syne", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a0a0f;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+.pn-select:focus {
+  border-color: #3a3f5c;
+  background: #fff;
+}
+.pn-textarea {
+  border: 1.5px solid #e8e6e0;
+  background: #fafaf8;
+  resize: vertical;
+  padding: 12px 14px;
+  font-family: "Syne", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a0a0f;
+  outline: none;
+  transition: border-color 0.15s ease;
+  width: 100%;
+  min-height: 72px;
+}
+.pn-textarea:focus {
+  border-color: #3a3f5c;
+  background: #fff;
+}
+
+/* Carrier cards */
+.pn-carriers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+.pn-carrier-card {
+  border: 1.5px solid #e8e6e0;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  background: #fafaf8;
+}
+.pn-carrier-card:hover {
+  border-color: #3a3f5c;
+}
+.pn-carrier-card.selected {
+  border-color: #0a0a0f;
+  background: #fff;
+}
+.pn-carrier-card.selected::before {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #2d7a4f;
+}
+.pn-carrier-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0a0a0f;
+  margin-bottom: 4px;
+}
+.pn-carrier-service {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  color: #8a8478;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.pn-carrier-price {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0a0a0f;
+  letter-spacing: -0.03em;
+}
+.pn-carrier-days {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  color: #8a8478;
+  letter-spacing: 0.06em;
+}
+
+.pn-btn-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.pn-btn-back {
+  padding: 0 24px;
+  height: 44px;
+  background: #fff;
+  color: #0a0a0f;
+  font-family: "Syne", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1.5px solid #e8e6e0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pn-btn-back:hover {
+  border-color: #0a0a0f;
+}
+.pn-btn-next {
+  padding: 0 32px;
+  height: 44px;
+  background: #0a0a0f;
+  color: #f5f3ee;
+  font-family: "Syne", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.pn-btn-next:hover {
+  background: #c84b2f;
+}
+
+/* Summary */
+.pn-summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0ede8;
+}
+.pn-summary-row:last-child {
+  border-bottom: none;
+}
+.pn-summary-key {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #8a8478;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pn-summary-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0a0a0f;
+  text-align: right;
+}
+.pn-summary-total {
+  font-size: 20px;
+  font-weight: 800;
+  color: #c84b2f;
+}
+
+/* Success */
+.pn-success {
+  text-align: center;
+  padding: 80px 40px;
+  background: #fff;
+  border: 1.5px solid #e8e6e0;
+}
+.pn-success-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+.pn-success-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0a0a0f;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+.pn-success-id {
+  font-family: "DM Mono", monospace;
+  font-size: 16px;
+  color: #c84b2f;
+  margin-bottom: 8px;
+}
+.pn-success-sub {
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  color: #8a8478;
+  letter-spacing: 0.04em;
+  margin-bottom: 32px;
+}
+.pn-success-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .pn-grid-2,
+  .pn-grid-3,
+  .pn-carriers {
+    grid-template-columns: 1fr;
+  }
+  .pn-steps {
+    flex-direction: column;
+  }
+}

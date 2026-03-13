@@ -1,0 +1,166 @@
+.po-filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.po-search {
+  flex: 1;
+  min-width: 200px;
+  height: 40px;
+  border: 1.5px solid #e8e6e0;
+  background: #fff;
+  padding: 0 14px;
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+  color: #0a0a0f;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.po-search:focus {
+  border-color: #3a3f5c;
+}
+.po-filter-btn {
+  padding: 0 16px;
+  height: 40px;
+  background: #fff;
+  color: #3a3f5c;
+  font-family: "Syne", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid #e8e6e0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.02em;
+}
+.po-filter-btn:hover,
+.po-filter-btn.active {
+  background: #0a0a0f;
+  color: #f5f3ee;
+  border-color: #0a0a0f;
+}
+
+.po-table-card {
+  background: #fff;
+  border: 1.5px solid #e8e6e0;
+  overflow: scroll;
+}
+.po-table-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e8e6e0;
+}
+.po-count {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #8a8478;
+  letter-spacing: 0.06em;
+}
+
+.po-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.po-table th {
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  color: #8a8478;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  text-align: left;
+  border-bottom: 1px solid #e8e6e0;
+  background: #fafaf8;
+}
+.po-table td {
+  padding: 14px 20px;
+  font-size: 13px;
+  color: #0a0a0f;
+  border-bottom: 1px solid #f0ede8;
+  vertical-align: middle;
+}
+.po-table tr:last-child td {
+  border-bottom: none;
+}
+.po-table tr:hover td {
+  background: #fafaf8;
+  cursor: pointer;
+}
+
+.po-id {
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  color: #c84b2f;
+  font-weight: 500;
+}
+.po-route {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0a0a0f;
+}
+.po-sub {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  color: #8a8478;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+.po-carrier {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #3a3f5c;
+  letter-spacing: 0.04em;
+}
+.po-weight {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #8a8478;
+}
+.po-price {
+  font-weight: 800;
+  font-size: 13px;
+  color: #0a0a0f;
+}
+.po-date {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #8a8478;
+}
+
+.po-badge {
+  display: inline-block;
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  padding: 3px 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.po-badge.transit {
+  background: #e8f0fe;
+  color: #3a3f5c;
+}
+.po-badge.delivered {
+  background: #d8f3e9;
+  color: #2d7a4f;
+}
+.po-badge.pending {
+  background: #fef3dc;
+  color: #b07d2a;
+}
+.po-badge.exception {
+  background: #fdf0ed;
+  color: #c84b2f;
+}
+
+.po-empty {
+  padding: 60px;
+  text-align: center;
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+  color: #8a8478;
+  letter-spacing: 0.06em;
+}

@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #0a0a0f; font-family: 'Syne', sans-serif; min-height: 100vh; }
+
+:root {
+  --ink:       #0a0a0f;
+  --paper:     #f5f3ee;
+  --rust:      #c84b2f;
+  --steel:     #3a3f5c;
+  --mist:      #e8e6e0;
+  --warm-gray: #8a8478;
+  --dim:       #1c1c26;
+  --dim2:      #2a2a3a;
+}
+
+/* ── SHELL ── */
+.nf-shell {
+  min-height: 100vh;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background grid */
+.nf-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+}
+
+/* Glowing orb */
+.nf-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 75, 47, 0.12) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ── CONTENT ── */
+.nf-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 560px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.nf-code {
+  font-size: 120px;
+  font-weight: 800;
+  color: var(--paper);
+  letter-spacing: -0.06em;
+  line-height: 1;
+  margin-bottom: 4px;
+  opacity: 0.08;
+  user-select: none;
+}
+
+.nf-icon {
+  font-size: 52px;
+  margin-bottom: 20px;
+  display: block;
+  animation: float 3s ease-in-out infinite;
+}
+
+.nf-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--paper);
+  letter-spacing: -0.04em;
+  margin-bottom: 12px;
+}
+.nf-title span { color: var(--rust); }
+
+.nf-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: #6a6a80;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+/* ── ACTIONS ── */
+.nf-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-home {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--rust);
+  color: var(--paper);
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s ease, transform 0.1s ease;
+  text-decoration: none;
+}
+.btn-home:hover  { background: #e05530; }
+.btn-home:active { transform: scale(0.98); }
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: transparent;
+  color: #6a6a80;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1.5px solid var(--dim2);
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: all 0.15s ease;
+}
+.btn-back:hover { border-color: #4a4a58; color: var(--paper); }
+
+/* ── QUICK LINKS ── */
+.nf-links {
+  margin-top: 48px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nf-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #44495e;
+  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  border: 1px solid var(--dim2);
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+.nf-link:hover { color: var(--paper); border-color: #4a4a58; }
+
+/* ── BRAND ── */
+.nf-brand {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nf-brand-mark {
+  width: 32px; height: 32px;
+  background: var(--rust);
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display: flex; align-items: center; justify-content: center;
+}
+.nf-brand-mark svg { width: 16px; height: 16px; fill: white; }
+.nf-brand-name {
+  font-size: 16px; font-weight: 800;
+  color: var(--paper); letter-spacing: -0.03em;
+}
+.nf-brand-name span { color: var(--rust); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
