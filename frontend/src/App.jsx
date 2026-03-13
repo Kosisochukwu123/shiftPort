@@ -31,8 +31,8 @@ function Layout() {
       <Routes>
         {/* PUBLIC ROUTES */}
 
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/portal/signup" element={<Signup />} />
 
         {/* ---------------- ADMIN AREA ---------------- */}
