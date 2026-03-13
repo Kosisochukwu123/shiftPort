@@ -32,7 +32,7 @@ function Layout() {
         {/* PUBLIC ROUTES */}
 
         <Route path="/landing" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/portal/signup" element={<Signup />} />
 
         {/* ---------------- ADMIN AREA ---------------- */}
