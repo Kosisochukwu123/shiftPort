@@ -54,7 +54,7 @@ export default function Landing() {
 
         <div className="nav-ctas">
           <button className="btn-nav-login" onClick={() => navigate("/login")}>Sign In</button>
-          <button className="btn-nav-cta"   onClick={() => navigate("/portal/signup")}>Get Started →</button>
+          <button className="btn-nav-cta"   onClick={() => navigate("/register")}>Get Started →</button>
         </div>
       </nav>
 

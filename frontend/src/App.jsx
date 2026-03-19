@@ -11,7 +11,7 @@ import TrackOrder from "./Pages/admin/TrackOrder/TrackOrder";
 import NotFound from "./Pages/NotFound/NotFound";
 
 // ── Seller (protected) pages ──────────────────────────────────────────────
-import DashBoard from "./Pages/admin/DashBoard/DashBoard";
+import DashBoard from "./Pages/admin/DashBoard/DashBoard.jsx";
 import Shipments from "./Pages/admin/Shipments/Shipments";
 import ShipmentDetail from "./Pages/admin/ShipmentDetails/ShipmentDetails";
 import Tracking from "./Pages/admin/Tracking/Tracking";
@@ -74,6 +74,7 @@ function Layout() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        {/* <Route path="/signup" element={<Signup />} /> */}
 
         {/* Public buyer tracking — no login needed */}
         <Route path="/track/:trackingId" element={<TrackOrder />} />
@@ -163,8 +164,8 @@ function Layout() {
         />
 
         {/* ── Customer portal ── */}
-        {/* <Route path="/portal/signup" element={<Signup />} />
-        <Route path="/portal/dashboard" element={<PortalDashboard />} />
+
+        {/* <Route path="/portal/dashboard" element={<PortalDashboard />} />
         <Route path="/portal/orders" element={<PortalOrders />} />
         <Route path="/portal/new" element={<PortalNew />} />
         <Route path="/portal/profile" element={<PortalProfile />} />
