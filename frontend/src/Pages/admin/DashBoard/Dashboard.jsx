@@ -66,7 +66,7 @@ function timeAgo(ts) {
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-export default function DashBoard() {
+export default function Dashboard() {
   const navigate = useNavigate();
   const { authFetch, seller, logout } = useAuth();
 
