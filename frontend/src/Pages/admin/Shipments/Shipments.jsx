@@ -1,219 +1,314 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import "./Shipments.css";
 
-const ALL_SHIPMENTS = [
-  { id: "#SP-9401", origin: "Lagos, NG",        dest: "London, UK",    carrier: "DHL Express",   status: "In Transit", date: "Mar 12", weight: "3.2 kg", cost: "$84.00",  priority: "Express",  statusBg: "#eef1fb", statusText: "#3a3f5c", dotColor: "#3a3f5c", priorityBg: "#fdf0ed", priorityText: "#c84b2f" },
-  { id: "#SP-9312", origin: "Lagos, NG",         dest: "Berlin, DE",    carrier: "DHL Express",   status: "Delivered",  date: "Mar 10", weight: "0.9 kg", cost: "$42.50",  priority: "Standard", statusBg: "#e8f5ee", statusText: "#2d7a4f", dotColor: "#2d7a4f", priorityBg: "#f0eee8", priorityText: "#3a3f5c" },
-  { id: "#SP-9241", origin: "Kano, NG",          dest: "Paris, FR",     carrier: "DHL Express",   status: "Pending",    date: "Mar 12", weight: "2.1 kg", cost: "$61.00",  priority: "Standard", statusBg: "#fdf6e3", statusText: "#b07d2a", dotColor: "#b07d2a", priorityBg: "#f0eee8", priorityText: "#3a3f5c" },
-  { id: "#SP-9103", origin: "Abuja, NG",         dest: "New York, US",  carrier: "FedEx Intl.",   status: "In Transit", date: "Mar 11", weight: "1.8 kg", cost: "$97.20",  priority: "Express",  statusBg: "#eef1fb", statusText: "#3a3f5c", dotColor: "#3a3f5c", priorityBg: "#fdf0ed", priorityText: "#c84b2f" },
-  { id: "#SP-8890", origin: "Ibadan, NG",         dest: "Toronto, CA",   carrier: "FedEx Intl.",   status: "Exception",  date: "Mar 10", weight: "3.5 kg", cost: "$110.00", priority: "Express",  statusBg: "#fdf0ed", statusText: "#c84b2f", dotColor: "#c84b2f", priorityBg: "#fdf0ed", priorityText: "#c84b2f" },
-  { id: "#SP-8821", origin: "Lagos, NG",          dest: "London, UK",    carrier: "DHL Express",   status: "Delivered",  date: "Mar 12", weight: "4.2 kg", cost: "$88.00",  priority: "Standard", statusBg: "#e8f5ee", statusText: "#2d7a4f", dotColor: "#2d7a4f", priorityBg: "#f0eee8", priorityText: "#3a3f5c" },
-  { id: "#SP-8750", origin: "Port Harcourt, NG",  dest: "Amsterdam, NL", carrier: "UPS Worldwide", status: "Delivered",  date: "Mar 09", weight: "7.1 kg", cost: "$140.00", priority: "Freight",  statusBg: "#e8f5ee", statusText: "#2d7a4f", dotColor: "#2d7a4f", priorityBg: "#eef1fb", priorityText: "#3a3f5c" },
-  { id: "#SP-8644", origin: "Enugu, NG",          dest: "Milan, IT",     carrier: "UPS Worldwide", status: "In Transit", date: "Mar 09", weight: "2.8 kg", cost: "$78.40",  priority: "Standard", statusBg: "#eef1fb", statusText: "#3a3f5c", dotColor: "#3a3f5c", priorityBg: "#f0eee8", priorityText: "#3a3f5c" },
-  { id: "#SP-8510", origin: "Lagos, NG",          dest: "Sydney, AU",    carrier: "FedEx Intl.",   status: "In Transit", date: "Mar 08", weight: "1.2 kg", cost: "$132.00", priority: "Express",  statusBg: "#eef1fb", statusText: "#3a3f5c", dotColor: "#3a3f5c", priorityBg: "#fdf0ed", priorityText: "#c84b2f" },
-  { id: "#SP-8401", origin: "Abuja, NG",          dest: "Dubai, AE",     carrier: "DHL Express",   status: "Delivered",  date: "Mar 07", weight: "5.6 kg", cost: "$95.80",  priority: "Standard", statusBg: "#e8f5ee", statusText: "#2d7a4f", dotColor: "#2d7a4f", priorityBg: "#f0eee8", priorityText: "#3a3f5c" },
-  { id: "#SP-8320", origin: "Kano, NG",           dest: "Riyadh, SA",    carrier: "UPS Worldwide", status: "Pending",    date: "Mar 12", weight: "1.4 kg", cost: "$54.00",  priority: "Standard", statusBg: "#fdf6e3", statusText: "#b07d2a", dotColor: "#b07d2a", priorityBg: "#f0eee8", priorityText: "#3a3f5c" },
-  { id: "#SP-8200", origin: "Lagos, NG",          dest: "Singapore, SG", carrier: "FedEx Intl.",   status: "Delivered",  date: "Mar 06", weight: "0.7 kg", cost: "$118.50", priority: "Express",  statusBg: "#e8f5ee", statusText: "#2d7a4f", dotColor: "#2d7a4f", priorityBg: "#fdf0ed", priorityText: "#c84b2f" },
-];
+const STATUS_META = {
+  "Delivered":        { bg: "#e8f5ee", text: "#2d7a4f", dot: "#2d7a4f" },
+  "On the Way":       { bg: "#eef1fb", text: "#3a3f5c", dot: "#3a3f5c" },
+  "Dispatched":       { bg: "#fdf6e3", text: "#b07d2a", dot: "#b07d2a" },
+  "Out for Delivery": { bg: "#fff3e0", text: "#e65100", dot: "#e65100" },
+  "Issue Raised":     { bg: "#fdf0ed", text: "#c84b2f", dot: "#c84b2f" },
+};
 
-const CARRIERS  = ["All Carriers", "DHL Express", "FedEx Intl.", "UPS Worldwide"];
-const STATUSES  = ["All", "In Transit", "Delivered", "Pending", "Exception"];
+const STATUSES  = ["All", "Dispatched", "On the Way", "Out for Delivery", "Delivered", "Issue Raised"];
 const NAV_ICONS = [
-  { label: "Dashboard", icon: "⬡" }, { label: "Shipments", icon: "◈" },
-  { label: "Tracking",  icon: "◎" }, { label: "Analytics", icon: "◧" },
-  { label: "Settings",  icon: "⊕" },
+  { label: "Dashboard", icon: "⬡", path: "/dashboard"  },
+  { label: "Orders",    icon: "◈", path: "/shipments"   },
+  { label: "Tracking",  icon: "◎", path: "/tracking"    },
+  { label: "Reports",   icon: "◧", path: "/analytics"   },
+  { label: "Settings",  icon: "⊕", path: "/settings"    },
 ];
 
-function NewShipmentModal({ onClose }) {
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState({
-    senderName: "", senderCity: "", senderAddress: "",
-    recipientName: "", recipientCity: "", recipientAddress: "",
-    weight: "", dimensions: "", carrier: "DHL Express", priority: "Standard", notes: "",
-  });
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
-
-  return (
-    <div className="modal-overlay">
-
-      <div className="modal-box">
-        <div className="modal-head">
-          <div>
-            <div className="modal-title">New Shipment</div>
-            <div className="modal-step">STEP {step} OF 2 — {step === 1 ? "ADDRESSES" : "PACKAGE DETAILS"}</div>
-          </div>
-          <button className="modal-close" onClick={onClose}>✕</button>
-        </div>
-        <div className="modal-progress">
-          <div className={`modal-progress-bar${step >= 1 ? " done" : ""}`} />
-          <div className={`modal-progress-bar${step >= 2 ? " done" : ""}`} />
-        </div>
-        <div className="modal-body">
-          {step === 1 ? (
-            <div className="modal-grid">
-              <div className="full"><span className="modal-section-label">Sender Details</span></div>
-              <div><label className="field-label">Full Name</label><input className="field-input" value={form.senderName} onChange={e => set("senderName", e.target.value)} placeholder="e.g. James Okafor" /></div>
-              <div><label className="field-label">City / State</label><input className="field-input" value={form.senderCity} onChange={e => set("senderCity", e.target.value)} placeholder="e.g. Lagos, NG" /></div>
-              <div className="full"><label className="field-label">Address</label><input className="field-input" value={form.senderAddress} onChange={e => set("senderAddress", e.target.value)} placeholder="Street address" /></div>
-              <div className="full"><hr className="modal-divider" /></div>
-              <div className="full"><span className="modal-section-label">Recipient Details</span></div>
-              <div><label className="field-label">Full Name</label><input className="field-input" value={form.recipientName} onChange={e => set("recipientName", e.target.value)} placeholder="e.g. Sarah Chen" /></div>
-              <div><label className="field-label">City / Country</label><input className="field-input" value={form.recipientCity} onChange={e => set("recipientCity", e.target.value)} placeholder="e.g. London, UK" /></div>
-              <div className="full"><label className="field-label">Address</label><input className="field-input" value={form.recipientAddress} onChange={e => set("recipientAddress", e.target.value)} placeholder="Street address" /></div>
-            </div>
-          ) : (
-            <div className="modal-grid">
-              <div className="full"><span className="modal-section-label">Package Info</span></div>
-              <div><label className="field-label">Weight (kg)</label><input className="field-input" value={form.weight} onChange={e => set("weight", e.target.value)} placeholder="e.g. 2.5" /></div>
-              <div><label className="field-label">Dimensions (cm)</label><input className="field-input" value={form.dimensions} onChange={e => set("dimensions", e.target.value)} placeholder="L × W × H" /></div>
-              <div>
-                <label className="field-label">Carrier</label>
-                <select className="field-select" value={form.carrier} onChange={e => set("carrier", e.target.value)}>
-                  {["DHL Express", "FedEx Intl.", "UPS Worldwide"].map(c => <option key={c}>{c}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="field-label">Priority</label>
-                <select className="field-select" value={form.priority} onChange={e => set("priority", e.target.value)}>
-                  {["Standard", "Express", "Freight"].map(p => <option key={p}>{p}</option>)}
-                </select>
-              </div>
-              <div className="full">
-                <label className="field-label">Notes (optional)</label>
-                <textarea className="field-textarea" rows={3} value={form.notes} onChange={e => set("notes", e.target.value)} placeholder="Special handling instructions..." />
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="modal-foot">
-          <button className="btn-ghost" onClick={() => step === 1 ? onClose() : setStep(1)}>{step === 1 ? "Cancel" : "← Back"}</button>
-          <button className="btn-confirm" onClick={() => step === 1 ? setStep(2) : onClose()}>{step === 1 ? "Next →" : "Create Shipment ✓"}</button>
-        </div>
-      </div>
-    </div>
-  );
+function formatDate(ts) {
+  if (!ts) return "—";
+  return new Date(ts).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" });
 }
 
 export default function Shipments() {
-  const [activeNav,     setActiveNav]     = useState("Shipments");
+  const navigate = useNavigate();
+  const { authFetch, logout } = useAuth();
+
+  // UI state
+  const [activeNav,     setActiveNav]     = useState("Orders");
   const [search,        setSearch]        = useState("");
   const [statusFilter,  setStatusFilter]  = useState("All");
-  const [carrierFilter, setCarrierFilter] = useState("All Carriers");
   const [selected,      setSelected]      = useState([]);
-  const [showModal,     setShowModal]     = useState(false);
-  const [sortKey,       setSortKey]       = useState("date");
+  const [sortKey,       setSortKey]       = useState("createdAt");
   const [sortDir,       setSortDir]       = useState("desc");
+  const [page,          setPage]          = useState(1);
+  const [searchInput,   setSearchInput]   = useState("");
 
-  const filtered = ALL_SHIPMENTS
-    .filter(s => statusFilter === "All" || s.status === statusFilter)
-    .filter(s => carrierFilter === "All Carriers" || s.carrier === carrierFilter)
-    .filter(s => {
-      const q = search.toLowerCase();
-      return !q || s.id.toLowerCase().includes(q) || s.origin.toLowerCase().includes(q) || s.dest.toLowerCase().includes(q);
-    });
+  // Data state
+  const [orders,   setOrders]  = useState([]);
+  const [total,    setTotal]   = useState(0);
+  const [pages,    setPages]   = useState(1);
+  const [loading,  setLoading] = useState(true);
+  const [error,    setError]   = useState("");
 
+  const LIMIT = 12;
+
+  // ── Fetch ─────────────────────────────────────────────────────────────
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const params = new URLSearchParams({
+        page,
+        limit: LIMIT,
+        ...(statusFilter !== "All" && { status: statusFilter }),
+        ...(search && { search }),
+      });
+      const res  = await authFetch(`/api/dispatches?${params}`);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || "Failed to load orders.");
+      setOrders(data.dispatches || []);
+      setTotal(data.total || 0);
+      setPages(data.pages || 1);
+      setSelected([]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [authFetch, page, statusFilter, search]);
+
+  useEffect(() => { fetchOrders(); }, [fetchOrders]);
+
+  // ── Search debounce ───────────────────────────────────────────────────
+  useEffect(() => {
+    const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  // ── Filter change ─────────────────────────────────────────────────────
+  const handleFilter = f => { setStatusFilter(f); setPage(1); };
+
+  // ── Sort ──────────────────────────────────────────────────────────────
+  const handleSort = key => {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("asc"); }
+  };
+
+  // Client-side sort on fetched page
+  const sorted = [...orders].sort((a, b) => {
+    let av = a[sortKey] || "", bv = b[sortKey] || "";
+    if (sortKey === "buyer") { av = a.buyer?.name || ""; bv = b.buyer?.name || ""; }
+    if (sortKey === "courier") { av = a.courier?.name || ""; bv = b.courier?.name || ""; }
+    if (av < bv) return sortDir === "asc" ? -1 : 1;
+    if (av > bv) return sortDir === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  // ── Select ────────────────────────────────────────────────────────────
   const toggleSelect = id => setSelected(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
-  const toggleAll    = () => setSelected(s => s.length === filtered.length && filtered.length > 0 ? [] : filtered.map(x => x.id));
-  const handleSort   = key => { if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc"); else { setSortKey(key); setSortDir("asc"); } };
-  const hasFilters   = statusFilter !== "All" || carrierFilter !== "All Carriers" || search;
+  const toggleAll    = () => setSelected(s => s.length === sorted.length ? [] : sorted.map(x => x.trackingId));
+
+  const hasFilters = statusFilter !== "All" || search;
+
+  const SortIcon = ({ k }) => (
+    <span className={`sort-icon${sortKey === k ? " active" : ""}`}>
+      {sortKey === k ? (sortDir === "asc" ? "▲" : "▼") : "▲"}
+    </span>
+  );
+
+  // ── Skeleton rows ─────────────────────────────────────────────────────
+  const SkeletonRow = () => (
+    <tr>
+      {[44, 100, 140, 100, 80, 80, 80, 90, 70].map((w, i) => (
+        <td key={i}><div className="skeleton" style={{ height: 12, width: w, borderRadius: 2 }} /></td>
+      ))}
+    </tr>
+  );
 
   return (
-    <>
-      <div className="sp-shell">
-        <aside className="sp-sidebar">
-          {NAV_ICONS.map(n => (
-            <div key={n.label} title={n.label} className={`sb-icon${activeNav === n.label ? " active" : ""}`} onClick={() => setActiveNav(n.label)}>{n.icon}</div>
-          ))}
-          <div className="sb-sep" />
-          <div className="sb-bottom"><div className="sb-icon" title="Sign Out">↩</div></div>
-        </aside>
+    <div className="sp-shell">
+      <aside className="sp-sidebar">
+        {NAV_ICONS.map(n => (
+          <div key={n.label} title={n.label}
+            className={`sb-icon${activeNav === n.label ? " active" : ""}`}
+            onClick={() => { setActiveNav(n.label); navigate(n.path); }}>
+            {n.icon}
+          </div>
+        ))}
+        <div className="sb-sep" />
+        <div className="sb-bottom">
+          <div className="sb-icon" title="Sign Out" onClick={() => { logout(); navigate("/login"); }}>↩</div>
+        </div>
+      </aside>
 
-        <main className="sp-main">
-          <div className="sp-topbar">
-            <div>
-              <div className="sp-title">All <span>Shipments</span></div>
-              <div className="sp-sub">{ALL_SHIPMENTS.length} total records — last updated Mar 12, 2026</div>
-            </div>
-            <div className="sp-actions">
-              <button className="btn-outline">↓ Export CSV</button>
-              <button className="btn-primary" onClick={() => setShowModal(true)}>+ New Shipment</button>
+      <main className="sp-main">
+        {/* Topbar */}
+        <div className="sp-topbar">
+          <div>
+            <div className="sp-title">All <span>Orders</span></div>
+            <div className="sp-sub">
+              {loading ? "Loading…" : `${total} total order${total !== 1 ? "s" : ""}`}
             </div>
           </div>
-
-          <div className="filter-row">
-            <div className="search-box">
-              <span className="search-icon">⌕</span>
-              <input placeholder="Search ID, origin, destination…" value={search} onChange={e => setSearch(e.target.value)} />
-            </div>
-            <select className="filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-              {STATUSES.map(s => <option key={s}>{s}</option>)}
-            </select>
-            <select className="filter-select" value={carrierFilter} onChange={e => setCarrierFilter(e.target.value)}>
-              {CARRIERS.map(c => <option key={c}>{c}</option>)}
-            </select>
-            {hasFilters && (
-              <button className="btn-clear" onClick={() => { setStatusFilter("All"); setCarrierFilter("All Carriers"); setSearch(""); }}>✕ Clear</button>
-            )}
+          <div className="sp-actions">
+            <button className="btn-outline" onClick={fetchOrders}>↺ Refresh</button>
+            <button className="btn-primary" onClick={() => navigate("/create-dispatch")}>
+              + Create Dispatch
+            </button>
           </div>
+        </div>
 
-          {selected.length > 0 && (
-            <div className="bulk-bar">
-              <span className="bulk-count">{selected.length} selected</span>
-              <div className="bulk-sep" />
-              <button className="bulk-btn">◈ Update Status</button>
-              <button className="bulk-btn">↓ Download Labels</button>
-              <button className="bulk-btn danger">✕ Delete</button>
-              <button className="bulk-close" onClick={() => setSelected([])}>✕</button>
-            </div>
+        {/* Error */}
+        {error && (
+          <div className="sp-error">
+            <span>⚠</span><span>{error}</span>
+            <button className="sp-error-retry" onClick={fetchOrders}>Retry</button>
+          </div>
+        )}
+
+        {/* Filters */}
+        <div className="filter-row">
+          <div className="search-box">
+            <span className="search-icon">⌕</span>
+            <input
+              placeholder="Search tracking ID, buyer name, phone…"
+              value={searchInput}
+              onChange={e => setSearchInput(e.target.value)}
+            />
+          </div>
+          <select className="filter-select" value={statusFilter} onChange={e => handleFilter(e.target.value)}>
+            {STATUSES.map(s => <option key={s}>{s}</option>)}
+          </select>
+          {hasFilters && (
+            <button className="btn-clear" onClick={() => { setStatusFilter("All"); setSearchInput(""); setSearch(""); setPage(1); }}>
+              ✕ Clear
+            </button>
           )}
+        </div>
 
-          <div className="sp-panel">
-            <div className="tbl-wrap">
-              <table>
-                <thead>
+        {/* Bulk actions */}
+        {selected.length > 0 && (
+          <div className="bulk-bar">
+            <span className="bulk-count">{selected.length} selected</span>
+            <div className="bulk-sep" />
+            <button className="bulk-btn">◈ Update Status</button>
+            <button className="bulk-btn">↓ Export</button>
+            <button className="bulk-btn danger">✕ Delete</button>
+            <button className="bulk-close" onClick={() => setSelected([])}>✕</button>
+          </div>
+        )}
+
+        {/* Table */}
+        <div className="sp-panel">
+          <div className="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ width: 40 }}>
+                    <div
+                      className={`cb${selected.length === sorted.length && sorted.length > 0 ? " checked" : ""}`}
+                      onClick={toggleAll}>
+                      {selected.length === sorted.length && sorted.length > 0 ? "✓" : ""}
+                    </div>
+                  </th>
+                  <th onClick={() => handleSort("trackingId")}>Tracking ID <SortIcon k="trackingId" /></th>
+                  <th onClick={() => handleSort("buyer")}>Buyer <SortIcon k="buyer" /></th>
+                  <th onClick={() => handleSort("courier")}>Courier <SortIcon k="courier" /></th>
+                  <th>Proof</th>
+                  <th onClick={() => handleSort("status")}>Status <SortIcon k="status" /></th>
+                  <th onClick={() => handleSort("createdAt")}>Date <SortIcon k="createdAt" /></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} />)
+                ) : sorted.length === 0 ? (
                   <tr>
-                    <th style={{ width: 40 }}>
-                      <div className={`cb${selected.length === filtered.length && filtered.length > 0 ? " checked" : ""}`} onClick={toggleAll}>
-                        {selected.length === filtered.length && filtered.length > 0 ? "✓" : ""}
+                    <td colSpan={8}>
+                      <div className="tbl-empty-wrap">
+                        <div className="tbl-empty-icon">📭</div>
+                        <div className="tbl-empty-title">
+                          {hasFilters ? "No orders match your filters" : "No orders yet"}
+                        </div>
+                        <div className="tbl-empty-sub">
+                          {hasFilters
+                            ? "Try adjusting your search or filter."
+                            : "Create your first dispatch and get a tracking ID for your buyer."
+                          }
+                        </div>
+                        {!hasFilters && (
+                          <button className="tbl-empty-btn" onClick={() => navigate("/create-dispatch")}>
+                            + Create First Dispatch
+                          </button>
+                        )}
                       </div>
-                    </th>
-                    {[["id","ID"],["","Route"],["carrier","Carrier"],["weight","Weight"],["","Priority"],["cost","Cost"],["date","Date"],["","Status"],["",""]].map(([k,label],i) => (
-                      <th key={i} onClick={() => k && handleSort(k)}>
-                        {label}{k && <span className={`sort-icon${sortKey === k ? " active" : ""}`}>{sortKey === k ? (sortDir === "asc" ? "▲" : "▼") : "▲"}</span>}
-                      </th>
-                    ))}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {filtered.length === 0 ? (
-                    <tr><td colSpan={10} className="tbl-empty">No shipments match your filters</td></tr>
-                  ) : filtered.map(s => (
-                    <tr key={s.id} className={selected.includes(s.id) ? "selected-row" : ""}>
-                      <td><div className={`cb${selected.includes(s.id) ? " checked" : ""}`} onClick={() => toggleSelect(s.id)}>{selected.includes(s.id) ? "✓" : ""}</div></td>
-                      <td><span className="ship-id">{s.id}</span></td>
-                      <td><div className="ship-route"><span>{s.origin}</span><span className="route-arrow">→</span><span>{s.dest}</span></div></td>
-                      <td><span className="carrier-pill">{s.carrier}</span></td>
-                      <td className="td-mono">{s.weight}</td>
-                      <td><span className="priority-chip" style={{ background: s.priorityBg, color: s.priorityText }}>{s.priority}</span></td>
-                      <td className="td-bold">{s.cost}</td>
-                      <td className="td-mono td-muted">{s.date}</td>
-                      <td><span className="status-chip" style={{ background: s.statusBg, color: s.statusText }}><span className="chip-dot" style={{ background: s.dotColor }} />{s.status}</span></td>
-                      <td><button className="row-action">Track →</button></td>
+                ) : sorted.map(o => {
+                  const sc = STATUS_META[o.status] || STATUS_META["Dispatched"];
+                  return (
+                    <tr key={o.trackingId}
+                      className={selected.includes(o.trackingId) ? "selected-row" : ""}
+                      onClick={() => navigate(`/shipments/${o.trackingId}`)}>
+                      <td onClick={e => { e.stopPropagation(); toggleSelect(o.trackingId); }}>
+                        <div className={`cb${selected.includes(o.trackingId) ? " checked" : ""}`}>
+                          {selected.includes(o.trackingId) ? "✓" : ""}
+                        </div>
+                      </td>
+                      <td><span className="order-id">{o.trackingId}</span></td>
+                      <td>
+                        <div className="buyer-name">{o.buyer?.name}</div>
+                        <div className="buyer-phone">{o.buyer?.phone}</div>
+                      </td>
+                      <td><span className="courier-pill">{o.courier?.name}</span></td>
+                      <td>
+                        {o.waybillUrl
+                          ? <span className="proof-badge has-proof">✓ Saved</span>
+                          : <span className="proof-badge no-proof">⚠ Missing</span>
+                        }
+                      </td>
+                      <td>
+                        <span className="status-chip" style={{ background: sc.bg, color: sc.text }}>
+                          <span className="chip-dot" style={{ background: sc.dot }} />
+                          {o.status}
+                        </span>
+                      </td>
+                      <td className="td-mono td-muted">{formatDate(o.createdAt)}</td>
+                      <td onClick={e => e.stopPropagation()}>
+                        <button className="row-action"
+                          onClick={() => window.open(`/track/${o.trackingId}`, "_blank")}>
+                          Track →
+                        </button>
+                      </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          {!loading && total > 0 && (
             <div className="pagination">
-              <span className="pg-info">Showing {filtered.length} of {ALL_SHIPMENTS.length} results</span>
+              <span className="pg-info">
+                Showing {((page - 1) * LIMIT) + 1}–{Math.min(page * LIMIT, total)} of {total}
+              </span>
               <div className="pg-btns">
-                {["‹","1","2","3","›"].map((p,i) => <button key={i} className={`pg-btn${p==="1"?" active":""}`}>{p}</button>)}
+                <button className="pg-btn" disabled={page === 1} onClick={() => setPage(1)}>«</button>
+                <button className="pg-btn" disabled={page === 1} onClick={() => setPage(p => p - 1)}>‹</button>
+                {Array.from({ length: Math.min(pages, 5) }, (_, i) => {
+                  const p = Math.max(1, page - 2) + i;
+                  if (p > pages) return null;
+                  return (
+                    <button key={p} className={`pg-btn${page === p ? " active" : ""}`} onClick={() => setPage(p)}>
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="pg-btn" disabled={page >= pages} onClick={() => setPage(p => p + 1)}>›</button>
+                <button className="pg-btn" disabled={page >= pages} onClick={() => setPage(pages)}>»</button>
               </div>
             </div>
-          </div>
-        </main>
-      </div>
-      {showModal && <NewShipmentModal onClose={() => setShowModal(false)} />}
-    </>
+          )}
+        </div>
+      </main>
+    </div>
   );
 }

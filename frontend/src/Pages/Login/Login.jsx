@@ -1,43 +1,33 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./Login.css";
 
-const ACCOUNTS = [
-  { email: "admin@swiftport.io", password: "admin123", role: "admin", name: "James Okafor" },
-  { email: "user@swiftport.io",  password: "user123",  role: "user",  name: "Emeka Eze"    },
-  { email: "user2@swiftport.io", password: "user123",  role: "user",  name: "Amaka Nwosu"  },
-];
-
 export default function Login() {
+  const navigate  = useNavigate();
+  const location  = useLocation();
+  const { login, loading } = useAuth();
+
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
-  const [remember, setRemember] = useState(false);
-  const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState("");
-  const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  // Where to go after login — default to dashboard
+  const from = location.state?.from?.pathname || "/dashboard";
+
+  const handleSubmit = async () => {
     setError("");
     if (!email || !password) { setError("Please enter your email and password."); return; }
-    setLoading(true);
-    setTimeout(() => {
-      const account = ACCOUNTS.find(
-        a => a.email === email.trim().toLowerCase() && a.password === password
-      );
-      if (account) {
-        sessionStorage.setItem("sp_role", account.role);
-        sessionStorage.setItem("sp_user", account.name);
-        navigate(account.role === "admin" ? "/dashboard" : "/portal/dashboard");
-      } else {
-        setError("Invalid email or password.");
-        setLoading(false);
-      }
-    }, 800);
-  };
 
-  const fillDemo = a => { setEmail(a.email); setPassword(a.password); setError(""); };
-  const handleKey = e => { if (e.key === "Enter") handleSubmit(); };
+    const result = await login(email.trim(), password);
+
+    if (result.success) {
+      navigate(from, { replace: true });
+    } else {
+      setError(result.message || "Invalid email or password.");
+    }
+  };
 
   return (
     <div className="login-shell">
@@ -52,39 +42,33 @@ export default function Login() {
           </div>
           <div>
             <div className="login-brand-name">Swift<span>Port</span></div>
-            <div className="login-brand-tag">Logistics Platform</div>
+            <div className="login-brand-tag">Seller Dashboard</div>
           </div>
         </div>
 
         <div className="login-hero">
-          <div className="login-hero-title">Ship smarter.<br />Track <span>everything.</span></div>
+          <div className="login-hero-title">
+            Prove you shipped.<br />Build <span>trust.</span>
+          </div>
           <div className="login-hero-sub">
-            The complete logistics platform for businesses and individuals.
-            Real-time tracking, multi-carrier support, and doorstep pickup.
+            The easiest way for Nigerian sellers to show buyers their order is on the way — with real proof, real tracking, zero arguments.
           </div>
         </div>
 
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, color: "#2a2a3a", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 12 }}>
-            Demo credentials
+            No account yet?
           </div>
-          {ACCOUNTS.map(a => (
-            <div key={a.email}
-              onClick={() => fillDemo(a)}
-              style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "#44495e", cursor: "pointer", marginBottom: 6, transition: "color 0.15s" }}
-              onMouseEnter={e => e.currentTarget.style.color = "#6ee7a0"}
-              onMouseLeave={e => e.currentTarget.style.color = "#44495e"}
-            >
-              {a.role === "admin" ? "⬡ ADMIN" : "◎ USER "} · {a.email} / {a.password}
-            </div>
-          ))}
+          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "#44495e", lineHeight: 1.7 }}>
+            Create a free seller account and start generating dispatch proof in minutes.
+          </div>
         </div>
       </div>
 
       {/* Right form */}
       <div className="login-right">
         <div className="login-form-title">Welcome back</div>
-        <div className="login-form-sub">Sign in to your SwiftPort account</div>
+        <div className="login-form-sub">Sign in to your SwiftPort seller account</div>
 
         <div className="login-form">
           {error && <div className="form-error">⚠ {error}</div>}
@@ -92,30 +76,24 @@ export default function Login() {
           <div className="form-field">
             <label className="form-label">Email Address</label>
             <input className={`form-input${error ? " error" : ""}`}
-              type="email" placeholder="you@company.com"
+              type="email" placeholder="you@business.com"
               value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
-              onKeyDown={handleKey} autoFocus />
+              onKeyDown={e => e.key === "Enter" && handleSubmit()}
+              autoFocus />
           </div>
 
           <div className="form-field">
             <label className="form-label">Password</label>
             <div className="form-input-wrap">
               <input className={`form-input${error ? " error" : ""}`}
-                type={showPass ? "text" : "password"} placeholder="Enter your password"
+                type={showPass ? "text" : "password"} placeholder="Your password"
                 value={password} onChange={e => { setPassword(e.target.value); setError(""); }}
-                onKeyDown={handleKey} style={{ width: "100%", paddingRight: 40 }} />
+                onKeyDown={e => e.key === "Enter" && handleSubmit()}
+                style={{ width: "100%", paddingRight: 40 }} />
               <span className="form-input-icon" onClick={() => setShowPass(v => !v)}>
                 {showPass ? "🙈" : "👁"}
               </span>
             </div>
-          </div>
-
-          <div className="form-row">
-            <label className="form-remember">
-              <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
-              Remember me
-            </label>
-            <button className="form-forgot">Forgot password?</button>
           </div>
 
           <button className={`btn-login${loading ? " loading" : ""}`}
@@ -124,14 +102,17 @@ export default function Login() {
           </button>
 
           <div className="login-divider">OR</div>
-          <button className="btn-sso"><span>⬡</span> Continue with SSO</button>
+
+          <button className="btn-sso" onClick={() => navigate("/register")}>
+            <span>⬡</span> Create a seller account
+          </button>
         </div>
 
         <div className="login-footer">
           Don't have an account?{" "}
-          <a onClick={() => navigate("/portal/signup")} style={{ cursor: "pointer" }}>Create one free</a>
-          <br /><br />
-          <a style={{ cursor: "pointer" }}>Privacy Policy</a> · <a style={{ cursor: "pointer" }}>Terms of Service</a>
+          <a onClick={() => navigate("/register")} style={{ cursor: "pointer" }}>
+            Register free →
+          </a>
         </div>
       </div>
     </div>

@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",
+    "qrcode": "^1.5.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-qr-code": "^2.0.18",
     "react-router-dom": "^7.13.1"
   },
   "devDependencies": {
