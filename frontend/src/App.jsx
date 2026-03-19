@@ -11,7 +11,7 @@ import TrackOrder from "./Pages/admin/TrackOrder/TrackOrder";
 import NotFound from "./Pages/NotFound/NotFound";
 
 // ── Seller (protected) pages ──────────────────────────────────────────────
-import Dashboard from "./Pages/admin/DashBoard/DashBoard";
+import DashBoard from "./Pages/admin/DashBoard/DashBoard";
 import Shipments from "./Pages/admin/Shipments/Shipments";
 import ShipmentDetail from "./Pages/admin/ShipmentDetails/ShipmentDetails";
 import Tracking from "./Pages/admin/Tracking/Tracking";
@@ -84,7 +84,7 @@ function Layout() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashBoard />
             </ProtectedRoute>
           }
         />
