@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import QRDispatchCard from "../QRDispatchCard/QRDispatchCard";
+import QRDispatchCard from "../QRDispatchCard/QRDispatchcard";
 import "./CreateDispatch.css";
 
 const COURIERS = [
