@@ -15,7 +15,7 @@
  */
 
 import { useRef } from "react";
-import "./QRDispatchCard.css";
+import "./QRDispatchcard.css";
 
 const API_BASE   = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const TRACK_BASE = typeof window !== "undefined" ? window.location.origin : "";
