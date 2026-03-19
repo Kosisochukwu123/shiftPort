@@ -14,8 +14,8 @@
  *   npm install qrcode
  */
 
-import { useEffect, useRef, useState } from "react";
-import QRCode from "qrcode";
+import { useRef } from "react";
+import { QRCodeCanvas } from "qrcode.react";
 import "./QRDispatchCard.css";
 
 const API_BASE   = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -58,9 +58,6 @@ function buildQRContent({ trackingId, businessName, phone, whatsapp, instagram, 
 
 export default function QRDispatchCard({ dispatch, seller, onClose }) {
   const canvasRef        = useRef(null);
-  const [qrReady, setQrReady] = useState(false);
-  const [qrError, setQrError] = useState("");
-
   const trackingId  = dispatch?.trackingId  || "";
   const trackingUrl = `${TRACK_BASE}/track/${trackingId}`;
 
@@ -71,26 +68,6 @@ export default function QRDispatchCard({ dispatch, seller, onClose }) {
   const instagram    = seller?.instagram     || "";
   const logoSrc      = seller?.logo          ? `${API_BASE}${seller.logo}` : null;
   const bio          = seller?.bio           || "";
-
-  // ── Generate QR code onto canvas ────────────────────────────────────────
-  useEffect(() => {
-    if (!canvasRef.current || !trackingId) return;
-
-    const content = buildQRContent({ trackingId, businessName, phone, whatsapp, instagram, trackingUrl });
-
-    QRCode.toCanvas(canvasRef.current, content, {
-      width:            200,
-      margin:           1,
-      color: {
-        dark:  "#0a0a0f",
-        light: "#ffffff",
-      },
-      errorCorrectionLevel: "M",
-    }, (err) => {
-      if (err) { setQrError("Could not generate QR code."); return; }
-      setQrReady(true);
-    });
-  }, [trackingId, businessName, phone, whatsapp, instagram]);
 
   // ── Print handler ────────────────────────────────────────────────────────
   const handlePrint = () => window.print();
@@ -159,11 +136,14 @@ export default function QRDispatchCard({ dispatch, seller, onClose }) {
             {/* Left: QR code */}
             <div className="qr-code-col">
               <div className="qr-canvas-wrap">
-                <canvas ref={canvasRef} className={qrReady ? "" : "qr-canvas-loading"} />
-                {!qrReady && !qrError && (
-                  <div className="qr-generating">Generating…</div>
-                )}
-                {qrError && <div className="qr-error">{qrError}</div>}
+                <QRCodeCanvas
+                  value={buildQRContent({ trackingId, businessName, phone, whatsapp, instagram, trackingUrl })}
+                  size={168}
+                  bgColor="#ffffff"
+                  fgColor="#0a0a0f"
+                  level="M"
+                  style={{ display: "block" }}
+                />
               </div>
               <div className="qr-scan-label">Scan to track order</div>
               <div className="qr-tracking-url">{trackingUrl}</div>
