@@ -15,49 +15,19 @@
  */
 
 import { useRef } from "react";
-import { QRCodeCanvas } from "qrcode.react";
 import "./QRDispatchCard.css";
 
 const API_BASE   = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const TRACK_BASE = typeof window !== "undefined" ? window.location.origin : "";
-
-// ── helpers ────────────────────────────────────────────────────────────────
 
 function formatDate(ts) {
   if (!ts) return new Date().toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" });
   return new Date(ts).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" });
 }
 
-/**
- * Build a vCard 3.0 string that gets encoded into the QR.
- * When scanned on iOS/Android:
- *   • Tracking URL opens in browser
- *   • Contact details can be saved to phone
- */
-function buildQRContent({ trackingId, businessName, phone, whatsapp, instagram, trackingUrl }) {
-  // Primary payload: the tracking URL — most useful for buyers
-  // We embed seller contact in a structured URL fragment so a
-  // simple scan opens tracking while the contact data is carried.
-  const lines = [
-    `BEGIN:VCARD`,
-    `VERSION:3.0`,
-    `FN:${businessName || "SwiftPort Seller"}`,
-    `ORG:${businessName || "SwiftPort Seller"}`,
-    phone     ? `TEL;TYPE=CELL:${phone.replace(/\s/g,"")}` : "",
-    whatsapp  ? `TEL;TYPE=WORK:${whatsapp.replace(/\s/g,"")}` : "",
-    instagram ? `URL:https://instagram.com/${instagram.replace(/^@/,"")}/` : "",
-    `URL;TYPE=TRACKING:${trackingUrl}`,
-    `NOTE:Track order ${trackingId} at ${trackingUrl}`,
-    `END:VCARD`,
-  ].filter(Boolean).join("\n");
-
-  return lines;
-}
-
 // ── component ──────────────────────────────────────────────────────────────
 
 export default function QRDispatchCard({ dispatch, seller, onClose }) {
-  const canvasRef        = useRef(null);
   const trackingId  = dispatch?.trackingId  || "";
   const trackingUrl = `${TRACK_BASE}/track/${trackingId}`;
 
@@ -136,12 +106,11 @@ export default function QRDispatchCard({ dispatch, seller, onClose }) {
             {/* Left: QR code */}
             <div className="qr-code-col">
               <div className="qr-canvas-wrap">
-                <QRCodeCanvas
-                  value={buildQRContent({ trackingId, businessName, phone, whatsapp, instagram, trackingUrl })}
-                  size={168}
-                  bgColor="#ffffff"
-                  fgColor="#0a0a0f"
-                  level="M"
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=168x168&margin=4&data=${encodeURIComponent(trackingUrl)}`}
+                  alt={`QR code for order ${trackingId}`}
+                  width={168}
+                  height={168}
                   style={{ display: "block" }}
                 />
               </div>
