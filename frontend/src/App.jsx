@@ -25,12 +25,12 @@ import Disputes from "./Pages/admin/Disputes/Disputes";
 
 // ── Customer portal pages ─────────────────────────────────────────────────
 import PortalHeader from "./components/portalHeader/PortalHeader";
-import PortalDashboard from "./Pages/users/PortalDashboard/PortalDashboard";
-import PortalOrders from "./Pages/users/PortalOrders/PortalOrders";
-import PortalNew from "./Pages/users/PortalNew/PortalNew";
-import PortalProfile from "./Pages/users/PortalProfile/PortalProfile";
-import PortalNotifications from "./Pages/users/PortalNotification/PortalNotification";
-import Signup from "./Pages/users/Signup/Signup";
+// import PortalDashboard from "./Pages/users/PortalDashboard/PortalDashboard";
+// import PortalOrders from "./Pages/users/PortalOrders/PortalOrders";
+// import PortalNew from "./Pages/users/PortalNew/PortalNew";
+// import PortalProfile from "./Pages/users/PortalProfile/PortalProfile";
+// import PortalNotifications from "./Pages/users/PortalNotification/PortalNotification";
+// import Signup from "./Pages/users/Signup/Signup";
 
 // ── Seller admin header ───────────────────────────────────────────────────
 import ShippingHeader from "./components/shippingHeader/ShippingHeader";
@@ -163,12 +163,12 @@ function Layout() {
         />
 
         {/* ── Customer portal ── */}
-        <Route path="/portal/signup" element={<Signup />} />
+        {/* <Route path="/portal/signup" element={<Signup />} />
         <Route path="/portal/dashboard" element={<PortalDashboard />} />
         <Route path="/portal/orders" element={<PortalOrders />} />
         <Route path="/portal/new" element={<PortalNew />} />
         <Route path="/portal/profile" element={<PortalProfile />} />
-        <Route path="/portal/notifications" element={<PortalNotifications />} />
+        <Route path="/portal/notifications" element={<PortalNotifications />} /> */}
 
         {/* ── 404 ── */}
         <Route path="*" element={<NotFound />} />
