@@ -11,7 +11,7 @@ import TrackOrder from "./Pages/admin/TrackOrder/TrackOrder";
 import NotFound from "./Pages/NotFound/NotFound";
 
 // ── Seller (protected) pages ──────────────────────────────────────────────
-import Dashboard from "./Pages/admin/Dashboard/Dashboard";
+import Dashboard from "./Pages/admin/Dashboard/Dashboard.jsx";
 import Shipments from "./Pages/admin/Shipments/Shipments";
 import ShipmentDetail from "./Pages/admin/ShipmentDetails/ShipmentDetails";
 import Tracking from "./Pages/admin/Tracking/Tracking";
