@@ -24,7 +24,7 @@ import UpdateStatus from "./Pages/admin/UpdateStatus/UpdateStatus";
 import Disputes from "./Pages/admin/Disputes/Disputes";
 
 // ── Customer portal pages ─────────────────────────────────────────────────
-import PortalHeader from "./components/portalHeader/PortalHeader";
+import PortalHeader from "./components/PortalHeader/PortalHeader";
 // import PortalDashboard from "./Pages/users/PortalDashboard/PortalDashboard";
 // import PortalOrders from "./Pages/users/PortalOrders/PortalOrders";
 // import PortalNew from "./Pages/users/PortalNew/PortalNew";
@@ -33,7 +33,7 @@ import PortalHeader from "./components/portalHeader/PortalHeader";
 // import Signup from "./Pages/users/Signup/Signup";
 
 // ── Seller admin header ───────────────────────────────────────────────────
-import ShippingHeader from "./components/shippingHeader/ShippingHeader";
+import ShippingHeader from "./components/ShippingHeader/ShippingHeader";
 
 // Routes that show the seller admin header
 const ADMIN_HEADER_ROUTES = [
