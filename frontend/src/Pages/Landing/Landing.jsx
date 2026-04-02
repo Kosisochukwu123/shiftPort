@@ -74,10 +74,10 @@ export default function Landing() {
         </p>
 
         <div className="hero-ctas">
-          <button className="btn-hero-primary" onClick={() => navigate("/portal/signup")}>
+          <button className="btn-hero-primary" onClick={() => navigate("/shipments")}>
             Start Shipping Free →
           </button>
-          <button className="btn-hero-secondary" onClick={() => navigate("/portal/track")}>
+          <button className="btn-hero-secondary" onClick={() => navigate("/tracking")}>
             Track a Shipment
           </button>
         </div>
