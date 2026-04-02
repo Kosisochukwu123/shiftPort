@@ -77,7 +77,7 @@ export default function Landing() {
           <button className="btn-hero-primary" onClick={() => navigate("/shipments")}>
             Start Shipping Free →
           </button>
-          <button className="btn-hero-secondary" onClick={() => navigate("/tracking")}>
+          <button className="btn-hero-secondary" onClick={() => navigate("/track")}>
             Track a Shipment
           </button>
         </div>
